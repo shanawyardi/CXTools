@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CX Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --ys-font-ui: "Mulish", system-ui, sans-serif;
+  --ys-primary-500: rgb(0,114,206);
+  --ys-primary-600: rgb(0,46,82);
+  --ys-primary-700: rgb(0,80,144);
+  --ys-bg-app: rgb(251,251,251);
+  --ys-bg-surface: rgb(255,255,255);
+  --ys-bg-sunken: rgb(245,245,245);
+  --ys-fg-primary: rgba(0,0,0,0.87);
+  --ys-fg-secondary: rgba(0,0,0,0.60);
+  --ys-fg-tertiary: rgba(0,0,0,0.48);
+  --ys-border-subtle: rgb(233,233,233);
+  --ys-border-default: rgb(206,212,218);
+  --ys-shadow-sm: 0 2px 4px 0 rgba(0,0,0,0.08);
+  --ys-shadow-md: 0 4px 16px 0 rgba(0,0,0,0.12);
+  --ys-radius-md: 8px;
+  --ys-radius-lg: 12px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--ys-font-ui); background: var(--ys-bg-app); color: var(--ys-fg-primary); min-height: 100vh; }
+
+/* Top bar */
+.topbar {
+  display: flex; align-items: center; height: 64px; padding: 0 24px;
+  background: linear-gradient(to right, var(--ys-primary-500), rgb(0,133,241) 90%, var(--ys-primary-500));
+  position: sticky; top: 0; z-index: 100; gap: 12px;
+}
+.topbar-logo { width: 32px; height: 32px; background: rgba(255,255,255,0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.topbar-logo i { color: #fff; font-size: 16px; }
+.topbar-title { font-size: 22px; font-weight: 400; color: rgba(255,255,255,0.95); letter-spacing: -0.01em; }
+.topbar-sub { font-size: 14px; color: rgba(255,255,255,0.60); margin-left: 2px; }
+
+/* Hero */
+.hero { padding: 48px 24px 32px; max-width: 960px; margin: 0 auto; }
+.hero-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ys-fg-tertiary); margin-bottom: 10px; }
+.hero-heading { font-size: 28px; font-weight: 700; color: var(--ys-fg-primary); line-height: 1.2; margin-bottom: 10px; }
+.hero-sub { font-size: 15px; color: var(--ys-fg-secondary); line-height: 1.6; max-width: 520px; }
+
+/* Tools grid */
+.tools-section { padding: 0 24px 64px; max-width: 960px; margin: 0 auto; }
+.section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ys-fg-tertiary); padding-bottom: 10px; margin-bottom: 16px; border-bottom: 1px solid var(--ys-border-subtle); }
+.tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+
+/* Tool card */
+.tool-card {
+  background: var(--ys-bg-surface);
+  border: 1px solid var(--ys-border-default);
+  border-radius: var(--ys-radius-lg);
+  padding: 20px;
+  text-decoration: none;
+  display: block;
+  transition: border-color 0.12s, box-shadow 0.12s, transform 0.12s;
+  box-shadow: var(--ys-shadow-sm);
+}
+.tool-card:hover { border-color: var(--ys-primary-500); box-shadow: 0 4px 16px rgba(0,114,206,0.14); transform: translateY(-1px); }
+
+.tool-icon {
+  width: 44px; height: 44px; border-radius: var(--ys-radius-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; margin-bottom: 14px;
+}
+.icon-blue { background: rgba(0,114,206,0.10); color: var(--ys-primary-500); }
+.icon-teal { background: rgba(0,189,255,0.10); color: rgb(0,132,179); }
+.icon-green { background: rgba(33,181,132,0.10); color: rgb(23,127,92); }
+.icon-amber { background: rgba(255,187,0,0.12); color: rgb(117,79,0); }
+
+.tool-name { font-size: 15px; font-weight: 700; color: var(--ys-fg-primary); margin-bottom: 6px; }
+.tool-desc { font-size: 13px; color: var(--ys-fg-secondary); line-height: 1.5; margin-bottom: 14px; }
+.tool-link { font-size: 12px; font-weight: 600; color: var(--ys-primary-500); display: inline-flex; align-items: center; gap: 5px; }
+
+/* Coming soon card */
+.tool-card-soon { opacity: 0.55; cursor: default; }
+.tool-card-soon:hover { border-color: var(--ys-border-default); box-shadow: var(--ys-shadow-sm); transform: none; }
+.soon-badge { display: inline-flex; align-items: center; height: 18px; padding: 0 8px; border-radius: 100px; background: var(--ys-bg-sunken); border: 1px solid var(--ys-border-default); font-size: 10px; font-weight: 700; color: var(--ys-fg-tertiary); letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Footer */
+.footer { text-align: center; padding: 24px; font-size: 12px; color: var(--ys-fg-tertiary); border-top: 1px solid var(--ys-border-subtle); }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="topbar-logo"><i class="fa-solid fa-layer-group"></i></div>
+  <div>
+    <div class="topbar-title">CX Tools</div>
+    <div class="topbar-sub">Customer Experience team resources</div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-label">Welcome</div>
+  <div class="hero-heading">Your CX team toolkit</div>
+  <div class="hero-sub">Resources built for CX Partners to navigate Residential Sales and Services, find the right contacts, and get work done faster.</div>
+</div>
+
+<div class="tools-section">
+  <div class="section-label">Available now</div>
+  <div class="tools-grid">
+
+    <a class="tool-card" href="resleadsdirectory">
+      <div class="tool-icon icon-blue"><i class="fa-solid fa-address-book"></i></div>
+      <div class="tool-name">Res Leadership Directory</div>
+      <div class="tool-desc">Find the right Sales and Services contact by product, region, or role. Includes direct links to Employee Central, email, and Teams.</div>
+      <div class="tool-link">Open directory <i class="fa-solid fa-arrow-right" style="font-size:10px"></i></div>
+    </a>
+
+    <div class="tool-card tool-card-soon">
+      <div class="tool-icon icon-teal"><i class="fa-solid fa-book-open"></i></div>
+      <div class="tool-name">CX Playbook <span class="soon-badge">Coming soon</span></div>
+      <div class="tool-desc">Processes, templates, and guidance for navigating client engagements across the residential portfolio.</div>
+      <div class="tool-link" style="color:var(--ys-fg-tertiary)">In development</div>
+    </div>
+
+    <div class="tool-card tool-card-soon">
+      <div class="tool-icon icon-green"><i class="fa-solid fa-rocket"></i></div>
+      <div class="tool-name">Onboarding Hub <span class="soon-badge">Coming soon</span></div>
+      <div class="tool-desc">Everything new CX Partners need to get up to speed on products, people, and processes.</div>
+      <div class="tool-link" style="color:var(--ys-fg-tertiary)">In development</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">CX Tools · Residential Sales &amp; Services · For internal use only</div>
+
+</body>
+</html>
