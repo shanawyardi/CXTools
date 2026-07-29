@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Product Glossary — CX Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --ys-font-ui: "Mulish", system-ui, sans-serif;
+  --ys-primary-500: rgb(0,114,206);
+  --ys-primary-600: rgb(0,46,82);
+  --ys-primary-700: rgb(0,80,144);
+  --ys-bg-app: rgb(251,251,251);
+  --ys-bg-surface: rgb(255,255,255);
+  --ys-bg-sunken: rgb(245,245,245);
+  --ys-fg-primary: rgba(0,0,0,0.87);
+  --ys-fg-secondary: rgba(0,0,0,0.60);
+  --ys-fg-tertiary: rgba(0,0,0,0.48);
+  --ys-border-subtle: rgb(233,233,233);
+  --ys-border-default: rgb(206,212,218);
+  --ys-border-primary: rgb(0,114,206);
+  --ys-tint-primary-1: rgba(0,114,206,0.08);
+  --ys-tint-primary-2: rgba(0,114,206,0.14);
+  --ys-tint-info-1: rgba(0,189,255,0.08);
+  --ys-tint-success-1: rgba(33,181,132,0.08);
+  --ys-tint-warning-1: rgba(255,187,0,0.08);
+  --ys-tint-danger-1: rgba(208,11,0,0.08);
+  --ys-shadow-sm: 0 2px 4px 0 rgba(0,0,0,0.08);
+  --ys-shadow-md: 0 4px 16px 0 rgba(0,0,0,0.12);
+  --ys-radius-md: 8px;
+  --ys-radius-lg: 12px;
+  --ys-radius-pill: 100px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--ys-font-ui); font-size: 14px; color: var(--ys-fg-primary); background: var(--ys-bg-app); min-height: 100vh; }
+
+/* Topbar */
+.topbar { display:flex; align-items:center; height:64px; padding:0 24px; background:linear-gradient(to right,rgb(0,114,206),rgb(0,133,241) 90%,rgb(0,114,206)); position:sticky; top:0; z-index:100; gap:16px; }
+.topbar-back { color:rgba(255,255,255,0.75); text-decoration:none; font-size:13px; font-weight:600; display:flex; align-items:center; gap:6px; }
+.topbar-back:hover { color:#fff; }
+.topbar-divider { width:1px; height:20px; background:rgba(255,255,255,0.25); }
+.topbar-title { font-size:22px; font-weight:400; color:rgba(255,255,255,0.95); }
+.topbar-sub { font-size:13px; color:rgba(255,255,255,0.60); }
+
+/* View tabs */
+.view-tabs { display:flex; background:rgba(0,0,0,0.18); border:1px solid rgba(255,255,255,0.20); border-radius:var(--ys-radius-md); padding:2px; overflow:hidden; margin-left:auto; }
+.vtab { height:28px; padding:0 14px; border:none; border-radius:6px; background:transparent; font-family:var(--ys-font-ui); font-size:12px; font-weight:600; color:rgba(255,255,255,0.75); cursor:pointer; white-space:nowrap; transition:all 0.12s; }
+.vtab:hover { color:#fff; background:rgba(255,255,255,0.10); }
+.vtab.active { background:#fff; color:rgb(0,46,82); }
+
+/* Search/filter bar */
+.search-bar { background:var(--ys-bg-surface); border-bottom:1px solid var(--ys-border-subtle); padding:10px 24px; display:flex; align-items:center; gap:12px; box-shadow:var(--ys-shadow-sm); flex-wrap:wrap; }
+.search-wrap { position:relative; }
+.search-wrap i { position:absolute; left:9px; top:50%; transform:translateY(-50%); color:var(--ys-fg-tertiary); font-size:13px; pointer-events:none; }
+.search-wrap input { height:32px; width:260px; border:1px solid var(--ys-border-default); border-radius:var(--ys-radius-md); padding:0 12px 0 30px; font-family:var(--ys-font-ui); font-size:14px; color:var(--ys-fg-primary); background:var(--ys-bg-surface); outline:none; }
+.search-wrap input:focus { border-color:var(--ys-border-primary); }
+.search-wrap input::placeholder { color:var(--ys-fg-tertiary); font-size:13px; }
+.chips { display:flex; gap:6px; flex-wrap:wrap; }
+.chip { display:inline-flex; align-items:center; height:26px; padding:0 12px; border:1px solid var(--ys-border-default); border-radius:var(--ys-radius-pill); font-family:var(--ys-font-ui); font-size:12px; font-weight:600; color:var(--ys-fg-secondary); cursor:pointer; background:var(--ys-bg-surface); transition:all 0.1s; }
+.chip:hover { background:var(--ys-bg-sunken); }
+.chip.active { background:rgba(0,189,255,0.08); border-color:rgb(0,189,255); color:var(--ys-fg-primary); }
+
+/* Page */
+.page { max-width:1040px; margin:0 auto; padding:24px 24px 80px; }
+.view-panel { display:none; }
+.view-panel.active { display:block; }
+
+/* Section */
+.product-section { margin-bottom:32px; }
+.section-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--ys-fg-tertiary); padding-bottom:8px; margin-bottom:12px; border-bottom:1px solid var(--ys-border-subtle); display:flex; align-items:center; gap:8px; }
+.sec-icon { width:18px; height:18px; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; font-size:9px; }
+
+/* Product card */
+.product-card { background:var(--ys-bg-surface); border:1px solid var(--ys-border-subtle); border-radius:var(--ys-radius-lg); padding:18px 20px; margin-bottom:8px; box-shadow:var(--ys-shadow-sm); transition:border-color 0.12s; }
+.product-card:hover { border-color:var(--ys-border-primary); }
+.product-card.hidden { display:none; }
+
+/* Virtuoso AI — special purple card */
+.product-card.card-virtuoso-ai { border:1.5px solid rgba(118,45,196,0.30); background:linear-gradient(135deg,rgba(118,45,196,0.04) 0%,var(--ys-bg-surface) 60%); }
+.product-card.card-virtuoso-ai:hover { border-color:rgba(118,45,196,0.60); box-shadow:0 4px 16px rgba(118,45,196,0.12); }
+/* Virtuoso Enterprise — dark navy card */
+.product-card.card-virtuoso-ent { border:1.5px solid rgba(0,46,82,0.25); background:linear-gradient(135deg,rgba(0,46,82,0.04) 0%,var(--ys-bg-surface) 60%); }
+.product-card.card-virtuoso-ent:hover { border-color:rgba(0,46,82,0.50); box-shadow:0 4px 16px rgba(0,46,82,0.12); }
+
+.product-header { display:flex; align-items:flex-start; gap:14px; }
+.product-icon { width:38px; height:38px; min-width:38px; border-radius:var(--ys-radius-md); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; margin-top:1px; }
+.icon-core { background:var(--ys-tint-primary-1); color:var(--ys-primary-500); }
+.icon-virtuoso-ai { background:linear-gradient(135deg,rgba(118,45,196,0.15),rgba(118,45,196,0.25)); color:rgb(118,45,196); }
+.icon-virtuoso-ent { background:linear-gradient(135deg,rgba(0,46,82,0.12),rgba(0,46,82,0.22)); color:rgb(0,46,82); }
+.icon-marketing { background:rgba(130,70,175,0.10); color:rgb(100,50,145); }
+.icon-crm { background:var(--ys-tint-info-1); color:rgb(0,132,179); }
+.icon-asset { background:var(--ys-tint-success-1); color:rgb(23,127,92); }
+.icon-resident { background:rgba(255,91,39,0.08); color:rgb(128,42,14); }
+.icon-affordable { background:rgba(208,11,0,0.08); color:rgb(163,9,0); }
+.icon-ancillary { background:var(--ys-tint-warning-1); color:rgb(117,79,0); }
+
+.product-name { font-size:15px; font-weight:700; color:var(--ys-fg-primary); margin-bottom:2px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.badge { display:inline-flex; align-items:center; height:18px; padding:0 7px; border-radius:var(--ys-radius-pill); font-size:10px; font-weight:700; letter-spacing:0.03em; }
+.badge-ai { background:linear-gradient(90deg,rgba(118,45,196,0.15),rgba(0,189,255,0.12)); color:rgb(80,30,145); border:1px solid rgba(118,45,196,0.25); }
+.badge-enterprise { background:rgba(0,46,82,0.10); color:rgb(0,46,82); border:1px solid rgba(0,46,82,0.20); }
+.badge-new { background:rgba(33,181,132,0.12); color:rgb(14,92,67); border:1px solid rgba(33,181,132,0.25); }
+.badge-3p { background:rgba(255,187,0,0.12); color:rgb(117,79,0); border:1px solid rgba(255,187,0,0.30); }
+
+.product-suite { font-size:11px; font-weight:600; color:var(--ys-fg-tertiary); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px; }
+.product-desc { font-size:13px; color:var(--ys-fg-secondary); line-height:1.65; }
+.product-meta { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; align-items:center; }
+.meta-tag { display:inline-flex; align-items:center; height:20px; padding:0 8px; border-radius:var(--ys-radius-pill); font-size:11px; font-weight:600; gap:4px; }
+.meta-owner { background:var(--ys-tint-primary-1); color:var(--ys-primary-700); }
+.meta-type { background:var(--ys-bg-sunken); color:var(--ys-fg-secondary); border:1px solid var(--ys-border-subtle); }
+.meta-link { background:transparent; color:var(--ys-primary-500); border:1px solid rgba(0,114,206,0.25); text-decoration:none; cursor:pointer; transition:background 0.1s; }
+.meta-link:hover { background:var(--ys-tint-primary-1); }
+.meta-dir { background:transparent; color:rgb(23,127,92); border:1px solid rgba(33,181,132,0.30); text-decoration:none; cursor:pointer; transition:background 0.1s; }
+.meta-dir:hover { background:rgba(33,181,132,0.08); }
+
+.expand-toggle { font-size:12px; font-weight:600; color:var(--ys-primary-500); cursor:pointer; display:inline-flex; align-items:center; gap:4px; margin-top:10px; background:none; border:none; padding:0; font-family:var(--ys-font-ui); }
+.expand-toggle:hover { text-decoration:underline; }
+.product-expand { margin-top:14px; padding-top:14px; border-top:1px solid var(--ys-border-subtle); display:none; }
+.product-expand.open { display:block; }
+.expand-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.expand-item label { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:var(--ys-fg-tertiary); display:block; margin-bottom:4px; }
+.expand-item p { font-size:13px; color:var(--ys-fg-secondary); line-height:1.55; }
+.related { display:flex; flex-wrap:wrap; gap:5px; margin-top:2px; }
+.related-pill { font-size:11px; font-weight:600; padding:3px 9px; border-radius:var(--ys-radius-pill); background:var(--ys-tint-primary-1); color:var(--ys-primary-700); cursor:pointer; text-decoration:none; border:1px solid rgba(0,114,206,0.15); transition:background 0.1s; }
+.related-pill:hover { background:rgba(0,114,206,0.14); }
+
+/* ── Routing guide ── */
+.routing-intro { margin-bottom:24px; }
+.routing-intro h2 { font-size:20px; font-weight:700; margin-bottom:6px; }
+.routing-intro p { font-size:14px; color:var(--ys-fg-secondary); line-height:1.6; max-width:600px; }
+.route-category { margin-bottom:28px; }
+.route-cat-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--ys-fg-tertiary); padding-bottom:8px; margin-bottom:12px; border-bottom:1px solid var(--ys-border-subtle); }
+.route-card { background:var(--ys-bg-surface); border:1px solid var(--ys-border-subtle); border-radius:var(--ys-radius-lg); padding:16px 18px; margin-bottom:8px; box-shadow:var(--ys-shadow-sm); display:grid; grid-template-columns:1fr auto; gap:16px; align-items:start; }
+.route-card:hover { border-color:var(--ys-border-primary); }
+.route-situation { font-size:13px; font-weight:700; color:var(--ys-fg-primary); margin-bottom:4px; }
+.route-desc { font-size:12px; color:var(--ys-fg-secondary); line-height:1.5; }
+.route-contacts { display:flex; flex-direction:column; gap:5px; min-width:200px; }
+.route-contact { display:flex; align-items:center; gap:8px; }
+.route-role { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--ys-fg-tertiary); min-width:80px; }
+.route-name { font-size:12px; font-weight:600; color:var(--ys-primary-500); text-decoration:none; }
+.route-name:hover { text-decoration:underline; }
+.route-product-pills { display:flex; flex-wrap:wrap; gap:4px; margin-top:6px; }
+.route-prod { font-size:11px; font-weight:600; padding:2px 8px; border-radius:var(--ys-radius-pill); background:var(--ys-tint-info-1); color:rgb(0,132,179); border:1px solid rgba(0,189,255,0.20); cursor:pointer; text-decoration:none; }
+.route-prod:hover { background:rgba(0,189,255,0.14); }
+
+.empty-state { text-align:center; padding:48px 20px; color:var(--ys-fg-tertiary); font-size:14px; }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <a class="topbar-back" href="https://yardi.atlassian.net/wiki/spaces/~ShanaW/pages/1846837284/Res+Leadership+Directory"><i class="fa-solid fa-arrow-left"></i> Directory</a>
+  <div class="topbar-divider"></div>
+  <div>
+    <div class="topbar-title">Product Glossary</div>
+    <div class="topbar-sub">Residential portfolio reference &amp; routing guide</div>
+  </div>
+  <div class="view-tabs">
+    <button class="vtab active" onclick="switchView('glossary',this)">Glossary</button>
+    <button class="vtab" onclick="switchView('routing',this)">Routing guide</button>
+  </div>
+</nav>
+
+<div class="search-bar" id="search-bar">
+  <div class="search-wrap">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" id="search" placeholder="Search products..." oninput="filterProducts()">
+  </div>
+  <div class="chips" id="cat-chips">
+    <button class="chip active" onclick="setFilter('all',this)">All</button>
+    <button class="chip" onclick="setFilter('platform',this)">Platform & AI</button>
+    <button class="chip" onclick="setFilter('marketing',this)">Marketing</button>
+    <button class="chip" onclick="setFilter('crm',this)">CRM & Leasing</button>
+    <button class="chip" onclick="setFilter('asset',this)">Asset Management</button>
+    <button class="chip" onclick="setFilter('resident',this)">Resident Services</button>
+    <button class="chip" onclick="setFilter('affordable',this)">Affordable & Specialty</button>
+    <button class="chip" onclick="setFilter('ancillary',this)">Ancillary</button>
+  </div>
+</div>
+
+<div class="page">
+  <div id="panel-glossary" class="view-panel active">
+    <div id="products-container"></div>
+    <div class="empty-state" id="empty" style="display:none"><i class="fa-solid fa-magnifying-glass" style="font-size:22px;margin-bottom:10px;display:block;opacity:0.3"></i>No products match your search.</div>
+  </div>
+
+  <div id="panel-routing" class="view-panel">
+    <div class="routing-intro">
+      <h2>Routing guide</h2>
+      <p>Use this guide to identify the right contact for a given client situation. Start with the product or topic, find the matching scenario, and reach out to the listed contact directly.</p>
+    </div>
+    <div id="routing-content"></div>
+  </div>
+</div>
+
+<script>
+// ── Product data ──────────────────────────────────────────────
+const EC = 'https://employeecentral.yardiapp.com/pages/userprofile/';
+
+const products = [
+  // PLATFORM & AI
+  {
+    id:'voyager', pill:'CORE / Voyager', name:'CORE / Voyager', badges:[], suite:'Platform', category:'platform',
+    icon:'fa-solid fa-database', iconClass:'icon-core', cardClass:'',
+    url:'https://www.yardi.com/product/voyager-residential/', dirUrl: null,
+    desc:'The foundational property management and accounting platform. Voyager is the single database all other Yardi products connect to — leasing, operations, accounting, and reporting all run through it. Every residential client starts here.',
+    type:'Property Management Platform', ownerName:'Arjun Rao', ownerUrl:43446,
+    whenToEngage:'Any client running Yardi as their core PMS. All other product conversations start from Voyager.',
+    distinguishFrom:'Voyager is the backend engine. RentCafé sits on top for resident-facing functions. Clients need Voyager before most other Yardi products.',
+    keyFact:'The foundation of the entire Yardi Residential suite. All IQ products, RentCafé, and Procure to Pay run on top of it.',
+    relatesTo:[{name:'RentCafé',url:'https://www.yardi.com/suite/rentcafe-suite/'},{name:'Revenue IQ',url:'https://www.yardi.com/product/revenue-iq/'},{name:'Procure to Pay (P2P)',url:'https://www.yardi.com/suite/procure-to-pay-suite/'}]
+  },
+  {
+    id:'virtuoso-ai', pill:'Virtuoso', name:'Virtuoso', badges:[{label:'AI Platform',cls:'badge-ai'}], suite:'Platform', category:'platform',
+    icon:'fa-solid fa-wand-magic-sparkles', iconClass:'icon-virtuoso-ai', cardClass:'card-virtuoso-ai',
+    url:'https://www.yardi.com/virtuoso/', dirUrl: null,
+    desc:'Yardi\'s AI platform that animates the entire Residential suite. Virtuoso embeds intelligence directly into the products your teams already use — powering Chat IQ, CRM IQ, Revenue IQ, and the Virtuoso Support assistant. Built on Yardi\'s own operational data, not generic AI models.',
+    type:'AI Platform', ownerName:'Akshai Rao', ownerUrl:25513,
+    whenToEngage:'Clients asking about AI capabilities, workflow automation, intelligent leasing assistants, or the next generation of Yardi product capabilities.',
+    distinguishFrom:'Virtuoso is the AI engine underneath other products — not a separate tool clients purchase on its own. It powers Chat IQ, CRM IQ, and the IQ product family. Virtuoso Enterprise (below) is the packaged offering for operators wanting full AI agent deployment.',
+    keyFact:'Virtuoso Support resolves 78% of queries without escalation and is embedded directly in Voyager 8 and CRM IQ — no separate login required.',
+    relatesTo:[{name:'Chat IQ',url:'https://www.yardi.com/blog/chat-iq-ai-features/'},{name:'CRM Flex/IQ',url:'https://www.yardi.com/product/rentcafe-crm-iq/'},{name:'Revenue IQ',url:'https://www.yardi.com/product/revenue-iq/'}]
+  },
+  {
+    id:'virtuoso-ent', pill:'Virtuoso Enterprise', name:'Virtuoso Enterprise', badges:[{label:'Enterprise AI',cls:'badge-enterprise'},{label:'New 2026',cls:'badge-new'}], suite:'Platform', category:'platform',
+    icon:'fa-solid fa-microchip', iconClass:'icon-virtuoso-ent', cardClass:'card-virtuoso-ent',
+    url:'https://www.yardi.com/news/press-releases/yardi-delivers-ai-agents-for-every-multifamily-role-and-workflow/', dirUrl: null,
+    desc:'Yardi\'s enterprise AI deployment platform for multifamily operators. Virtuoso Enterprise packages AI agents for every role — leasing, resident services, maintenance, and accounting — into a single enterprise offering. Includes Virtuoso Connectors for integrating Yardi data with external AI tools like Claude, and AI inspection agents for unit walkthroughs.',
+    type:'Enterprise AI Deployment', ownerName:'Akshai Rao', ownerUrl:25513,
+    whenToEngage:'Enterprise clients ready to deploy AI agents across their operations at scale. Clients asking about AI for accounting, maintenance, inspections, or connecting Yardi data to external AI platforms.',
+    distinguishFrom:'Virtuoso (the platform) powers individual AI features within products. Virtuoso Enterprise is the packaged enterprise offering — the full suite of AI agents deployed across the entire operation. Think of Virtuoso as the engine and Virtuoso Enterprise as the vehicle.',
+    keyFact:'Virtuoso Enterprise includes the Virtuoso Connector for Claude — enabling operators to query their Yardi data using natural language through Anthropic\'s Claude interface.',
+    relatesTo:[{name:'Virtuoso',url:'https://www.yardi.com/virtuoso/'},{name:'CORE/Voyager',url:'https://www.yardi.com/product/voyager-residential/'},{name:'CRM Flex/IQ',url:'https://www.yardi.com/product/rentcafe-crm-iq/'}]
+  },
+  // MARKETING
+  {
+    id:'rentcafe-marketing', pill:'RentCafé Marketing', name:'RentCafé Marketing / Websites', badges:[], suite:'RentCafé Suite', category:'marketing',
+    icon:'fa-solid fa-globe', iconClass:'icon-marketing', cardClass:'',
+    url:'https://www.yardi.com/suite/rentcafe-suite/', dirUrl: null,
+    desc:'Property marketing platform including branded property websites, apartment listing syndication, SEO, and digital tools. Drives prospect traffic directly into the leasing pipeline — all connected to live Voyager availability and pricing.',
+    type:'Marketing & Websites', ownerName:'Esther Bonardi', ownerUrl:26555,
+    whenToEngage:'Clients asking about property websites, online listings, SEO, or lead generation.',
+    distinguishFrom:'RentCafé Marketing covers owned channels (your property website). REACH covers paid media and advertising. Both feed leads into CRM.',
+    keyFact:'Property websites built on RentCafé integrate directly with Voyager for real-time unit availability and pricing — no manual updates.',
+    relatesTo:[{name:'RentCafé REACH',url:'https://www.reachbyrentcafe.com'},{name:'CRM Flex/IQ',url:'https://www.yardi.com/product/rentcafe-crm-iq/'},{name:'RentCafé',url:'https://www.yardi.com/suite/rentcafe-suite/'}]
+  },
+  {
+    id:'reach', pill:'RentCafé REACH', name:'RentCafé REACH', badges:[], suite:'RentCafé Suite', category:'marketing',
+    icon:'fa-solid fa-bullseye', iconClass:'icon-marketing', cardClass:'',
+    url:'https://www.reachbyrentcafe.com', dirUrl: null,
+    desc:'Yardi\'s managed digital advertising service. REACH handles paid search, social advertising, and ILS (Internet Listing Service) management on behalf of property operators to drive qualified leads.',
+    type:'Paid Media & Advertising', ownerName:'Esther Bonardi', ownerUrl:26555,
+    whenToEngage:'Clients asking about paid advertising, ILS management, or wanting Yardi to manage their digital marketing spend.',
+    distinguishFrom:'REACH is a managed service — Yardi\'s team runs campaigns on the client\'s behalf. RentCafé Marketing is software the client manages themselves.',
+    keyFact:'REACH is a service, not just software. A dedicated Yardi team manages campaigns and optimization.',
+    relatesTo:[{name:'RentCafé Marketing/Websites',url:'https://www.yardi.com/suite/rentcafe-suite/'},{name:'CRM Flex/IQ',url:'https://www.yardi.com/product/rentcafe-crm-iq/'}]
+  },
+  // CRM & LEASING
+  {
+    id:'rentcafe', pill:'RentCafé Portals', name:'RentCafé', badges:[], suite:'RentCafé Suite', category:'crm',
+    icon:'fa-solid fa-house-user', iconClass:'icon-crm', cardClass:'',
+    url:'https://www.yardi.com/suite/rentcafe-suite/', dirUrl: null,
+    desc:'Yardi\'s integrated leasing and resident experience platform covering the full renter lifecycle — online applications, digital lease signing, resident portals, rent payments, and maintenance requests. Built natively on Voyager so all data syncs in real time with no middleware.',
+    type:'Leasing & Resident Platform', ownerName:'Arjun Rao', ownerUrl:43446,
+    whenToEngage:'Clients using or considering Yardi for online leasing, resident portals, online payments, or maintenance requests.',
+    distinguishFrom:'RentCafé is the suite brand. Within it: CRM Flex/IQ handles lead-to-lease CRM. The Applicant/Resident Portals handle self-service. Chat IQ handles AI communication.',
+    keyFact:'Applicants transition directly into residents using the same login — no data re-entry, no separate systems.',
+    relatesTo:[{name:'CORE/Voyager',url:'https://www.yardi.com/product/voyager-residential/'},{name:'CRM Flex/IQ',url:'https://www.yardi.com/product/rentcafe-crm-iq/'},{name:'Chat IQ',url:'https://www.yardi.com/blog/chat-iq-ai-features/'}]
+  },
+  {
+    id:'crm', pill:'CRM Flex / CRM IQ', name:'CRM Flex / CRM IQ', badges:[], suite:'RentCafé Suite', category:'crm',
+    icon:'fa-solid fa-users', iconClass:'icon-crm', cardClass:'',
+    url:'https://www.yardi.com/product/rentcafe-crm-iq/', dirUrl: null,
+    desc:'Yardi\'s CRM tools for multifamily. CRM Flex is the established platform for prospect and resident management. CRM IQ is the AI-powered successor that manages the full lease lifecycle and supports centralized leasing operations — enabling one team to lease across multiple properties.',
+    type:'CRM & Centralized Leasing', ownerName:'Arjun Rao', ownerUrl:43446,
+    whenToEngage:'Clients asking about lead management, prospect follow-up, centralized leasing, or moving from site-level to centralized operations.',
+    distinguishFrom:'CRM Flex is the current widely-deployed version. CRM IQ is the AI-enhanced successor. Confirm which version the client is on before engaging — they have different capabilities.',
+    keyFact:'CRM IQ supports centralized leasing — one team managing prospects across multiple properties from a single dashboard.',
+    relatesTo:[{name:'RentCafé',url:'https://www.yardi.com/suite/rentcafe-suite/'},{name:'Chat IQ',url:'https://www.yardi.com/blog/chat-iq-ai-features/'},{name:'CORE/Voyager',url:'https://www.yardi.com/product/voyager-residential/'}]
+  },
+  {
+    id:'chatiq', pill:'Chat IQ', name:'Chat IQ', badges:[{label:'AI',cls:'badge-ai'}], suite:'RentCafé Suite', category:'crm',
+    icon:'fa-solid fa-robot', iconClass:'icon-crm', cardClass:'',
+    url:'https://www.yardi.com/blog/chat-iq-ai-features/', dirUrl: null,
+    desc:'AI-powered communication for prospects and residents — handles inquiries, qualifies leads, schedules tours, processes payments, manages renewals, and supports voice, all automatically 24/7. Powered by Virtuoso and connected directly to Voyager data.',
+    type:'AI Communication', ownerName:'Arjun Rao', ownerUrl:43446,
+    whenToEngage:'Clients asking about AI leasing assistants, chatbots, automated prospect communication, or 24/7 coverage without adding staff.',
+    distinguishFrom:'Chat IQ is Yardi\'s native AI — not a third-party chatbot. It runs on Virtuoso and connects directly to Voyager. The Yardi Call Center uses live agents for situations requiring human judgment.',
+    keyFact:'Chat IQ handles payments, renewals, and voice calls — not just basic inquiry responses.',
+    relatesTo:[{name:'CRM Flex/IQ',url:'https://www.yardi.com/product/rentcafe-crm-iq/'},{name:'Yardi Call Center',url:'https://www.yardi.com/'},{name:'Virtuoso',url:'https://www.yardi.com/virtuoso/'}]
+  },
+  {
+    id:'yld', pill:'YLD / Blue Moon', name:'YLD / Blue Moon', badges:[{label:'3rd party: Blue Moon (NAA)',cls:'badge-3p'}], suite:'RentCafé Suite', category:'crm',
+    icon:'fa-solid fa-file-signature', iconClass:'icon-crm', cardClass:'',
+    url:'https://www.yardi.com/suite/rentcafe-suite/', dirUrl: null,
+    desc:'Digital lease document platform combining two components: YLD (Yardi Lease Documents) is Yardi\'s native electronic signing and lease delivery system, fully integrated into the leasing workflow. Blue Moon is a third-party digital lease and document library by the National Apartment Association (NAA) — providing the industry\'s largest collection of state-specific, legally compliant residential lease templates. Together they enable end-to-end digital lease execution.',
+    type:'Lease Documents & eSigning', ownerName:'Arjun Rao', ownerUrl:43446,
+    whenToEngage:'Clients asking about digital leases, e-signatures, lease document compliance, or state-specific lease forms.',
+    distinguishFrom:'YLD is Yardi\'s delivery and signing mechanism. Blue Moon is the NAA\'s document library — a third-party product integrated into Yardi. Clients license them separately. Blue Moon documents are widely regarded as the industry standard for lease compliance.',
+    keyFact:'Blue Moon is owned by the National Apartment Association (NAA), not Yardi — it\'s a third-party integration. YLD is the Yardi-built component.',
+    relatesTo:[{name:'RentCafé',url:'https://www.yardi.com/suite/rentcafe-suite/'},{name:'CRM Flex/IQ',url:'https://www.yardi.com/product/rentcafe-crm-iq/'},{name:'CORE/Voyager',url:'https://www.yardi.com/product/voyager-residential/'}]
+  },
+  {
+    id:'callcenter', pill:'Yardi Call Center', name:'Yardi Call Center', badges:[], suite:'Ancillary Services', category:'ancillary',
+    icon:'fa-solid fa-headset', iconClass:'icon-ancillary', cardClass:'',
+    url:'https://www.yardi.com/', dirUrl: null,
+    desc:'A Yardi-staffed call center handling prospect and resident calls on behalf of property operators. Provides live agent coverage outside office hours and overflow support. Agents work directly in Yardi systems.',
+    type:'Managed Call Center Service', ownerName:'Patrick Hennessey', ownerUrl:27965,
+    whenToEngage:'Clients asking about after-hours coverage, overflow call handling, or centralizing inbound communications.',
+    distinguishFrom:'Yardi Call Center uses live agents. Chat IQ uses AI. Many clients use both — Chat IQ for instant 24/7 responses, Call Center for complex situations requiring human judgment.',
+    keyFact:'Agents work directly in Yardi — no handoff lag or duplicate data entry.',
+    relatesTo:[{name:'CRM Flex/IQ',url:'https://www.yardi.com/product/rentcafe-crm-iq/'},{name:'Chat IQ',url:'https://www.yardi.com/blog/chat-iq-ai-features/'}]
+  },
+  // ASSET MANAGEMENT
+  {
+    id:'revenueiq', pill:'Revenue IQ', name:'Revenue IQ', badges:[], suite:'Asset IQ Suite', category:'asset',
+    icon:'fa-solid fa-chart-line', iconClass:'icon-asset', cardClass:'',
+    url:'https://www.yardi.com/product/revenue-iq/', dirUrl: null,
+    desc:'AI-powered revenue management and dynamic pricing. Revenue IQ analyzes market conditions, occupancy, and demand to recommend optimal rent pricing and concession strategies in real time, built on live Voyager data.',
+    type:'Revenue Management', ownerName:'Arjun Rao', ownerUrl:43446,
+    whenToEngage:'Clients asking about dynamic pricing, revenue management, or optimizing rent across their portfolio.',
+    distinguishFrom:'Revenue IQ sets pricing recommendations. Forecast IQ models future performance. Asset IQ provides the executive dashboard view across all three.',
+    keyFact:'Built on live Voyager data — no external data feeds or manual uploads required.',
+    relatesTo:[{name:'Forecast IQ',url:'https://www.yardi.com/product/forecast-iq/'},{name:'Asset IQ',url:'https://www.yardi.com/product/asset-iq/'},{name:'Data Connect',url:'https://www.yardi.com/blog/yardi-data-connect/'}]
+  },
+  {
+    id:'forecastiq', pill:'Forecast IQ', name:'Forecast IQ', badges:[], suite:'Asset IQ Suite', category:'asset',
+    icon:'fa-solid fa-chart-area', iconClass:'icon-asset', cardClass:'',
+    url:'https://www.yardi.com/product/forecast-iq/', dirUrl: null,
+    desc:'AI-powered budgeting and performance forecasting for multifamily portfolios. Uses real-time operational data to predict rent trends, vacancy rates, and portfolio performance — replacing manual spreadsheet-based budgeting.',
+    type:'Budgeting & Forecasting', ownerName:'Arjun Rao', ownerUrl:43446,
+    whenToEngage:'Clients asking about budgeting automation, forecasting accuracy, or replacing Excel-based budget processes.',
+    distinguishFrom:'Forecast IQ is forward-looking (what will happen). Asset IQ is current-state reporting (what is happening now). Revenue IQ is prescriptive (what price to set today).',
+    keyFact:'Budgets built in Forecast IQ pull directly from live Voyager data — not exported snapshots.',
+    relatesTo:[{name:'Revenue IQ',url:'https://www.yardi.com/product/revenue-iq/'},{name:'Asset IQ',url:'https://www.yardi.com/product/asset-iq/'},{name:'Data Connect',url:'https://www.yardi.com/blog/yardi-data-connect/'}]
+  },
+  {
+    id:'assetiq', pill:'Asset IQ', name:'Asset IQ', badges:[], suite:'Asset IQ Suite', category:'asset',
+    icon:'fa-solid fa-building-columns', iconClass:'icon-asset', cardClass:'',
+    url:'https://www.yardi.com/product/asset-iq/', dirUrl: null,
+    desc:'Executive performance dashboard for multifamily portfolios. Consolidates operational and financial KPIs from across the Yardi suite into a single view — enabling owners and asset managers to monitor portfolio health and performance.',
+    type:'Asset Performance Dashboard', ownerName:'Arjun Rao', ownerUrl:43446,
+    whenToEngage:'Clients asking about portfolio dashboards, executive reporting, or connecting operational data to asset performance.',
+    distinguishFrom:'Asset IQ is the reporting and visibility layer. Revenue IQ and Forecast IQ are the action tools. Asset IQ shows the outcomes.',
+    keyFact:'Designed for owners and asset managers — not site teams. It\'s a strategic oversight tool.',
+    relatesTo:[{name:'Revenue IQ',url:'https://www.yardi.com/product/revenue-iq/'},{name:'Forecast IQ',url:'https://www.yardi.com/product/forecast-iq/'},{name:'Data Connect',url:'https://www.yardi.com/blog/yardi-data-connect/'}]
+  },
+  {
+    id:'dataconnect', pill:'Data Connect', name:'Data Connect', badges:[], suite:'Asset IQ Suite', category:'asset',
+    icon:'fa-solid fa-arrows-to-circle', iconClass:'icon-asset', cardClass:'',
+    url:'https://www.yardi.com/blog/yardi-data-connect/', dirUrl: null,
+    desc:'Yardi\'s data integration and BI layer. Gives clients direct access to their Voyager data for custom reporting, BI tool integration (Power BI, Tableau), and data warehouse connectivity.',
+    type:'Data Integration & BI', ownerName:'Arjun Rao', ownerUrl:43446,
+    whenToEngage:'Clients asking about custom reporting, data exports, BI tool connectivity, or building their own dashboards outside Yardi.',
+    distinguishFrom:'Asset IQ is Yardi\'s built-in dashboard. Data Connect is for clients who want to use their own BI tools or build custom reports.',
+    keyFact:'Enables direct access to Voyager data for analytics teams using Power BI, Tableau, or custom warehouses.',
+    relatesTo:[{name:'Asset IQ',url:'https://www.yardi.com/product/asset-iq/'},{name:'Forecast IQ',url:'https://www.yardi.com/product/forecast-iq/'},{name:'Revenue IQ',url:'https://www.yardi.com/product/revenue-iq/'}]
+  },
+  // RESIDENT SERVICES
+  {
+    id:'payments', pill:'Payments', name:'Payments', badges:[], suite:'Resident Services', category:'resident',
+    icon:'fa-solid fa-credit-card', iconClass:'icon-resident', cardClass:'',
+    url:'https://www.yardi.com/suite/rentcafe-suite/', dirUrl: null,
+    desc:'Integrated payment processing for rent, fees, and resident transactions. Supports ACH, credit/debit cards, and cash at retail locations — all posted directly to Voyager with no third-party processor integration needed.',
+    type:'Payment Processing', ownerName:'David Tepoorten', ownerUrl:43711,
+    whenToEngage:'Clients asking about online rent payments, payment processing, ACH setup, or reducing manual payment handling.',
+    distinguishFrom:'Yardi Payments is native to Voyager — all transactions post directly to the ledger. No separate reconciliation or middleware required.',
+    keyFact:'Cash payment support through retail networks means clients can accept cash without handling it on-site.',
+    relatesTo:[{name:'RentCafé',url:'https://www.yardi.com/suite/rentcafe-suite/'},{name:'CORE/Voyager',url:'https://www.yardi.com/product/voyager-residential/'}]
+  },
+  {
+    id:'screening', pill:'ScreeningWorks Pro', name:'ScreeningWorks Pro', badges:[], suite:'Resident Services', category:'resident',
+    icon:'fa-solid fa-user-check', iconClass:'icon-resident', cardClass:'',
+    url:'https://www.yardi.com/product/screeningworks-pro/', dirUrl: null,
+    desc:'Yardi\'s integrated applicant screening suite — formerly Yardi Resident Screening (YRS). ScreeningWorks Pro delivers credit reports (Equifax), background checks, eviction history, fraud detection, and automated approval recommendations directly within the leasing workflow. Optional add-ons include ID Verification and income validation.',
+    type:'Applicant Screening', ownerName:'Patrick Hennessey', ownerUrl:27965,
+    whenToEngage:'Clients asking about applicant screening, background checks, credit reports, screening compliance, or fraud prevention.',
+    distinguishFrom:'ScreeningWorks Pro is embedded in the leasing workflow — results appear in the same system leasing agents already use. No separate portal login or data re-entry. Consumer-facing screening is administered by RentGrow, a wholly owned Yardi subsidiary.',
+    keyFact:'ID Verification is an optional add-on that catches fraudulent applicants using advanced identity verification technology — increasingly important as rental fraud rises.',
+    relatesTo:[{name:'RentCafé',url:'https://www.yardi.com/suite/rentcafe-suite/'},{name:'CRM Flex/IQ',url:'https://www.yardi.com/product/rentcafe-crm-iq/'},{name:'CORE/Voyager',url:'https://www.yardi.com/product/voyager-residential/'}]
+  },
+  {
+    id:'idverification', pill:'ID Verification', name:'ID Verification', badges:[{label:'Add-on to ScreeningWorks Pro',cls:'badge-new'}], suite:'Resident Services', category:'resident',
+    icon:'fa-solid fa-id-card', iconClass:'icon-resident', cardClass:'',
+    url:'https://www.yardi.com/product/screeningworks-pro/', dirUrl: null,
+    desc:'Advanced applicant identity verification built into ScreeningWorks Pro. Uses AI-powered identity verification technology to confirm that applicants are who they say they are — catching fraudulent identities before they become residents. Available as an optional feature within the screening workflow.',
+    type:'Identity Verification (Screening Add-on)', ownerName:'Patrick Hennessey', ownerUrl:27965,
+    whenToEngage:'Clients concerned about applicant fraud, identity theft, or wanting to strengthen their screening program beyond credit and background checks.',
+    distinguishFrom:'ID Verification is an optional add-on to ScreeningWorks Pro — not a standalone product. It must be enabled within the screening configuration. It checks identity, not income (income validation is a separate optional add-on).',
+    keyFact:'Rental fraud is a growing risk across multifamily. ID Verification catches fraudulent applicants at the application stage before they enter the property.',
+    relatesTo:[{name:'ScreeningWorks Pro',url:'https://www.yardi.com/product/screeningworks-pro/'},{name:'RentCafé',url:'https://www.yardi.com/suite/rentcafe-suite/'},{name:'CRM Flex/IQ',url:'https://www.yardi.com/product/rentcafe-crm-iq/'}]
+  },
+  {
+    id:'insurance', pill:'ResidentShield', name:'ResidentShield Insurance', badges:[], suite:'Resident Services', category:'resident',
+    icon:'fa-solid fa-shield-halved', iconClass:'icon-resident', cardClass:'',
+    url:'https://www.yardi.com/product/residentshield-insurance/', dirUrl: null,
+    desc:'Yardi\'s renter\'s insurance solution — branded as ResidentShield. Offered through Peak Insurance Advisors, LLC, a wholly owned Yardi subsidiary. Includes the ResidentShield individual renters insurance program and the ResidentShield Master Policy Program. Enrollment is embedded in the Voyager leasing workflow with automated compliance tracking.',
+    type:'Renter\'s Insurance (ResidentShield)', ownerName:'Patrick Hennessey', ownerUrl:27965,
+    whenToEngage:'Clients asking about renter\'s insurance requirements, liability coverage, or automating insurance compliance tracking.',
+    distinguishFrom:'ResidentShield is Yardi\'s own insurance product (underwritten through third-party insurers via Peak Insurance Advisors). It\'s embedded in the resident experience — residents enroll without leaving the portal. Operators see compliance status in Voyager automatically.',
+    keyFact:'ResidentShield policies are backed by experienced underwriters and administered through Peak Insurance Advisors, LLC — a Yardi-owned insurance entity.',
+    relatesTo:[{name:'RentCafé',url:'https://www.yardi.com/suite/rentcafe-suite/'},{name:'ScreeningWorks Pro',url:'https://www.yardi.com/product/screeningworks-pro/'},{name:'Payments',url:'https://www.yardi.com/suite/rentcafe-suite/'}]
+  },
+  {
+    id:'rewards', pill:'RentCafé Rewards', name:'RentCafé Rewards & Renter Essentials', badges:[], suite:'Resident Services', category:'resident',
+    icon:'fa-solid fa-star', iconClass:'icon-resident', cardClass:'',
+    url:'https://www.yardi.com/suite/rentcafe-suite/', dirUrl: null,
+    desc:'Resident loyalty and value-add services platform. RentCafé Rewards lets operators offer points and perks to residents. Renter Essentials bundles value-add services including insurance, credit building, and move-in services into a single resident offering to improve retention and NOI.',
+    type:'Resident Loyalty & Services', ownerName:'Patrick Hennessey', ownerUrl:27965,
+    whenToEngage:'Clients asking about resident retention, loyalty programs, or value-add service bundles.',
+    distinguishFrom:'Rewards is the loyalty/points engine. Renter Essentials is the bundled services package. Often sold together as a resident experience program.',
+    keyFact:'Designed to improve resident retention and reduce turnover — measurable NOI impact through satisfaction.',
+    relatesTo:[{name:'RentCafé',url:'https://www.yardi.com/suite/rentcafe-suite/'},{name:'ResidentShield Insurance',url:'https://www.yardi.com/product/residentshield-insurance/'},{name:'Payments',url:'https://www.yardi.com/suite/rentcafe-suite/'}]
+  },
+  // AFFORDABLE & SPECIALTY
+  {
+    id:'affordable', pill:'Affordable Housing', name:'Affordable', badges:[], suite:'Specialty', category:'affordable',
+    icon:'fa-solid fa-house-chimney', iconClass:'icon-affordable', cardClass:'',
+    url:'https://www.yardi.com/markets/affordable-housing/', dirUrl: null,
+    desc:'Compliance and operations platform for affordable housing portfolios. Supports HUD programs, LIHTC, HOME, and other federal and state programs with built-in compliance tracking and regulatory reporting.',
+    type:'Affordable Housing Compliance', ownerName:'Chuck Manly', ownerUrl:26172,
+    whenToEngage:'Any client with an affordable housing portfolio, HUD programs, LIHTC properties, or mixed-income communities.',
+    distinguishFrom:'Affordable is for private operators managing regulated affordable units. PHA is specifically for Public Housing Authorities operating government-owned housing.',
+    keyFact:'Affordable compliance rules vary significantly by state and program — this requires dedicated expertise. Always loop in the Affordable team early.',
+    relatesTo:[{name:'CORE/Voyager',url:'https://www.yardi.com/product/voyager-residential/'},{name:'PHA',url:'https://www.yardi.com/markets/public-housing-authority/'}]
+  },
+  {
+    id:'pha', pill:'PHA', name:'PHA', badges:[], suite:'Specialty', category:'affordable',
+    icon:'fa-solid fa-landmark', iconClass:'icon-affordable', cardClass:'',
+    url:'https://www.yardi.com/markets/public-housing-authority/', dirUrl: null,
+    desc:'Platform for Public Housing Authorities supporting the full PHA operational lifecycle — tenant management, HUD reporting (SEMAP, PIC), Section 8 voucher administration, and public housing unit management.',
+    type:'Public Housing Authority', ownerName:'Chuck Manly', ownerUrl:26172,
+    whenToEngage:'Clients who are Public Housing Authorities or administering Section 8 / Housing Choice Voucher programs.',
+    distinguishFrom:'PHA is for government housing authorities. Affordable is for private owners with regulated affordable units. They share compliance complexity but serve different client types with different procurement requirements.',
+    keyFact:'PHA clients have very different procurement and compliance requirements from conventional multifamily — a specialized engagement from day one.',
+    relatesTo:[{name:'Affordable',url:'https://www.yardi.com/markets/affordable-housing/'},{name:'CORE/Voyager',url:'https://www.yardi.com/product/voyager-residential/'}]
+  },
+  {
+    id:'military', pill:'Military Housing', name:'Military', badges:[], suite:'Specialty', category:'affordable',
+    icon:'fa-solid fa-star-of-david', iconClass:'icon-affordable', cardClass:'',
+    url:'https://www.yardi.com/', dirUrl: null,
+    desc:'Residential platform configured for military housing operations. Supports unique requirements including BAH (Basic Allowance for Housing) payment processing, installation-specific workflows, and government reporting.',
+    type:'Military Housing', ownerName:'Akshai Rao', ownerUrl:25513,
+    whenToEngage:'Clients operating military family housing or working with defense housing contractors.',
+    distinguishFrom:'Military housing uses government payment flows (BAH), different lease structures, and specialized reporting not found in conventional multifamily.',
+    keyFact:'BAH payments replace traditional resident rent — the system must handle government payment flow rather than individual rent collection.',
+    relatesTo:[{name:'CORE/Voyager',url:'https://www.yardi.com/product/voyager-residential/'},{name:'Payments',url:'https://www.yardi.com/suite/rentcafe-suite/'}]
+  },
+  {
+    id:'student', pill:'Student Housing', name:'Student', badges:[], suite:'Specialty', category:'affordable',
+    icon:'fa-solid fa-graduation-cap', iconClass:'icon-affordable', cardClass:'',
+    url:'https://www.yardi.com/markets/student-housing/', dirUrl: null,
+    desc:'Platform configured for student housing operations. Addresses by-the-bed pricing, roommate matching, guarantor (parental co-signer) management, and academic-year lease terms common in purpose-built student housing.',
+    type:'Student Housing', ownerName:'Brian Draper', ownerUrl:25987,
+    whenToEngage:'Clients operating purpose-built student housing or mixed student/conventional communities.',
+    distinguishFrom:'Student housing uses by-the-bed leasing, parental guarantors, and academic-year terms — all handled differently from conventional multifamily.',
+    keyFact:'Guarantor management is a major differentiator — most student residents require parental co-signers tracked through the system.',
+    relatesTo:[{name:'CORE/Voyager',url:'https://www.yardi.com/product/voyager-residential/'},{name:'RentCafé',url:'https://www.yardi.com/suite/rentcafe-suite/'},{name:'ScreeningWorks Pro',url:'https://www.yardi.com/product/screeningworks-pro/'}]
+  },
+  // ANCILLARY
+  {
+    id:'yesEnergy', pill:'YES Energy', name:'YES Energy', badges:[], suite:'Energy Suite', category:'ancillary',
+    icon:'fa-solid fa-bolt', iconClass:'icon-ancillary', cardClass:'',
+    url:'https://www.yardi.com/suite/energy-suite/', dirUrl: null,
+    desc:'Utility billing, energy management, and sustainability reporting. Handles resident utility billing, submetering, RUBS (Ratio Utility Billing System), utility invoice processing, energy procurement, and ESG/sustainability reporting.',
+    type:'Energy & Utilities', ownerName:'James Armour', ownerUrl:26822,
+    whenToEngage:'Clients asking about utility billing, submetering, energy cost recovery, or ESG/sustainability reporting requirements.',
+    distinguishFrom:'YES Energy covers both the operational side (billing residents) and the strategic side (energy procurement, sustainability). These are often separate conversations with different stakeholders at the client.',
+    keyFact:'ESG reporting is a fast-growing use case — institutional owners increasingly need energy data for investor and regulatory reporting.',
+    relatesTo:[{name:'CORE/Voyager',url:'https://www.yardi.com/product/voyager-residential/'},{name:'Payments',url:'https://www.yardi.com/suite/rentcafe-suite/'}]
+  },
+  {
+    id:'p2p', pill:'Procure to Pay (P2P)', name:'Procure to Pay (P2P)', badges:[], suite:'Operations', category:'ancillary',
+    icon:'fa-solid fa-file-invoice-dollar', iconClass:'icon-ancillary', cardClass:'',
+    url:'https://www.yardi.com/suite/procure-to-pay-suite/', dirUrl: null,
+    desc:'Procurement and accounts payable automation suite covering purchase orders, vendor management, invoice scanning (PayScan), bill pay, and VendorCafe — the vendor portal where suppliers submit invoices directly into Yardi, eliminating paper and manual data entry.',
+    type:'Procurement & AP Automation (P2P)', ownerName:'Akshai Rao', ownerUrl:25513,
+    whenToEngage:'Clients asking about AP automation, invoice processing, vendor management, or reducing manual back-office work.',
+    distinguishFrom:'P2P is a back-office product serving property management staff and AP teams — not residents. VendorCafe is the vendor-facing portal embedded within the suite.',
+    keyFact:'VendorCafe lets vendors submit invoices directly into Yardi — eliminating paper invoices and manual data entry entirely.',
+    relatesTo:[{name:'CORE/Voyager',url:'https://www.yardi.com/product/voyager-residential/'},{name:'Payments',url:'https://www.yardi.com/suite/rentcafe-suite/'}]
+  },
+];
+
+// ── Routing data ──────────────────────────────────────────────
+const routing = [
+  {
+    category:'Platform & Implementation',
+    routes:[
+      {
+        situation:'Virtuoso Enterprise (VE) Implementations or Voyager upgrades',
+        desc:'Client is implementing Voyager for the first time, upgrading, or deploying Virtuoso Enterprise.',
+        products:['CORE/Voyager','Virtuoso Enterprise'],
+        contacts:[
+          {role:'SVP',name:'Arjun Rao',url:43446},
+          {role:'Regional Director (W/C)',name:'Josh Abood',url:27097},
+          {role:'Regional Director (NE)',name:'Baris Oncel',url:25874},
+          {role:'Regional Director (SE)',name:'Dewayne Jordan',url:26408},
+          {role:'Sales VP (W/C)',name:'Michael Tuer',url:27693},
+          {role:'Sales VP (NE/SE)',name:'Richard Malpica',url:28230}
+        ],
+        glossaryId:'voyager'
+      },
+      {
+        situation:'AI capabilities or Virtuoso platform questions',
+        desc:'Client asking about AI, automation, Virtuoso Support, or connecting Yardi data to external AI tools.',
+        products:['Virtuoso','Virtuoso Enterprise'],
+        contacts:[
+          {role:'President',name:'Akshai Rao',url:25513},
+          {role:'Industry Principal',name:'Shivani Kumar',url:60287},
+          {role:'Regional Lead',name:'Joe Consolo',url:42947}
+        ],
+        glossaryId:'virtuoso-ai'
+      },
+    ]
+  },
+  {
+    category:'Marketing & Lead Generation',
+    routes:[
+      {
+        situation:'RentCafé Marketing — Property websites or online listing presence',
+        desc:'Client asking about building or improving their property websites, SEO, or online listings.',
+        products:['RentCafé Marketing/Websites'],
+        contacts:[
+          {role:'VP',name:'Esther Bonardi',url:26555},
+          {role:'Regional Director (W)',name:'Catriona Banks-Orosco',url:26067},
+          {role:'Secondary Leader',name:'Gretchen Walker',url:42681},
+          {role:'Secondary Leader',name:'Nicole Lanfried',url:27849},
+          {role:'IP',name:'Chris Lindish',url:45497}
+        ],
+        glossaryId:'rentcafe-marketing'
+      },
+      {
+        situation:'RentCafé REACH — Paid advertising or digital marketing management',
+        desc:'Client wants Yardi to manage their paid search, social, or ILS advertising.',
+        products:['RentCafé REACH'],
+        contacts:[
+          {role:'VP',name:'Esther Bonardi',url:26555},
+          {role:'Regional Director (W)',name:'Catriona Banks-Orosco',url:26067},
+          {role:'IP',name:'Chris Lindish',url:45497}
+        ],
+        glossaryId:'reach'
+      },
+    ]
+  },
+  {
+    category:'CRM, Leasing & Resident Experience',
+    routes:[
+      {
+        situation:'CRM IQ — Lead management, prospect follow-up, or centralized leasing',
+        desc:'Client asking about CRM, prospect pipelines, or moving to centralized leasing operations.',
+        products:['CRM Flex/IQ'],
+        contacts:[{role:'SVP',name:'Arjun Rao',url:43446},{role:'Regional Director (W)',name:'Kian Khoddam',url:27259},{role:'Regional Director (NE)',name:'Jessica Marlow',url:42033},{role:'Regional Director (C/SE)',name:'Chrystal Chiang',url:42797}],
+        glossaryId:'crm'
+      },
+      {
+        situation:'Chat IQ — AI leasing assistant or 24/7 communication coverage',
+        desc:'Client asking about automated prospect/resident communication, chatbots, or AI-powered engagement.',
+        products:['Chat IQ'],
+        contacts:[{role:'SVP',name:'Arjun Rao',url:43446},{role:'Specialist',name:'Jacqueline Spiller',url:49094}],
+        glossaryId:'chatiq'
+      },
+      {
+        situation:'RentCafé Portals — Online leasing and resident portals',
+        desc:'Client asking about the resident-facing leasing experience including online applications and resident portals.',
+        products:['RentCafé Portals'],
+        contacts:[
+          {role:'SVP',name:'Arjun Rao',url:43446},
+          {role:'Product Owner',name:'Eric Zellhart',url:59048}
+        ],
+        glossaryId:'rentcafe'
+      },
+      {
+        situation:'YLD / Blue Moon — Digital lease management and document signing',
+        desc:'Client asking about digital leases, e-signatures, lease document compliance, or state-specific lease forms.',
+        products:['YLD/Blue Moon'],
+        contacts:[
+          {role:'SVP',name:'Arjun Rao',url:43446},
+          {role:'Regional Director',name:'Jim Hill',url:26993},
+          {role:'Product Owner',name:'Guy Weiss',url:47560}
+        ],
+        glossaryId:'yld'
+      },
+      {
+        situation:'Yardi Call Center — After-hours or overflow coverage (live agents)',
+        desc:'Client asking about live agent support outside office hours or during peak volume.',
+        products:['Yardi Call Center'],
+        contacts:[
+          {role:'VP',name:'Patrick Hennessey',url:27965},
+          {role:'Regional Director (W)',name:'Kevin Fortsch',url:27246},
+          {role:'Secondary Leader',name:'Travis Page',url:44609}
+        ],
+        glossaryId:'callcenter'
+      },
+    ]
+  },
+  {
+    category:'Asset Performance & Analytics',
+    routes:[
+      {
+        situation:'Revenue IQ — Dynamic pricing or revenue management',
+        desc:'Client asking about optimizing rent pricing, reducing vacancy loss, or revenue management strategy.',
+        products:['Revenue IQ'],
+        contacts:[
+          {role:'SVP',name:'Arjun Rao',url:43446},
+          {role:'Regional Director (W)',name:'Dustin Bradford',url:26483},
+          {role:'Secondary Leader',name:'Monica Bosch',url:27773},
+          {role:'IP',name:'Amy Walston',url:25655}
+        ],
+        glossaryId:'revenueiq'
+      },
+      {
+        situation:'Forecast IQ — Budget planning or performance forecasting',
+        desc:'Client asking about replacing spreadsheet budgets, improving forecast accuracy, or planning future performance.',
+        products:['Forecast IQ'],
+        contacts:[
+          {role:'SVP',name:'Arjun Rao',url:43446},
+          {role:'Regional Director (W)',name:'Tom Dragmen',url:28845},
+          {role:'Secondary Leader',name:'Chad Cook',url:26073},
+          {role:'IP',name:'Amy Walston',url:25655}
+        ],
+        glossaryId:'forecastiq'
+      },
+      {
+        situation:'Asset IQ — Portfolio dashboards or executive reporting',
+        desc:'Client asking about KPI visibility, executive dashboards, or connecting operations to asset performance.',
+        products:['Asset IQ'],
+        contacts:[
+          {role:'SVP',name:'Arjun Rao',url:43446},
+          {role:'Regional Director (W)',name:'Tom Dragmen',url:28845},
+          {role:'Secondary Leader',name:'Katrina Cavotta',url:31267},
+          {role:'IP',name:'Amy Walston',url:25655}
+        ],
+        glossaryId:'assetiq'
+      },
+      {
+        situation:'Data Connect — Custom reporting or BI tool integration (Power BI, Tableau)',
+        desc:'Client wants to build custom reports outside Yardi or connect Voyager data to their own BI platform.',
+        products:['Data Connect'],
+        contacts:[
+          {role:'SVP',name:'Arjun Rao',url:43446},
+          {role:'Regional Director (W)',name:'Tom Dragmen',url:28845},
+          {role:'Secondary Leader',name:'Evan Creekmore',url:30488},
+          {role:'IP',name:'Amy Walston',url:25655}
+        ],
+        glossaryId:'dataconnect'
+      },
+    ]
+  },
+  {
+    category:'Resident Services & Ancillary',
+    routes:[
+      {
+        situation:'Online rent payments or payment processing',
+        desc:'Client asking about accepting payments online, ACH setup, or reducing manual payment handling.',
+        products:['Payments'],
+        contacts:[{role:'VP',name:'David Tepoorten',url:43711},{role:'Regional Director (W)',name:'Stephen Teague',url:28674},{role:'Regional Director (SE)',name:'Jeff Hull',url:26915}],
+        glossaryId:'payments'
+      },
+      {
+        situation:'ScreeningWorks Pro — Applicant screening, background checks, or fraud prevention',
+        desc:'Client asking about screening applicants, credit/criminal reports, or catching fraudulent applications.',
+        products:['ScreeningWorks Pro','ID Verification'],
+        contacts:[
+          {role:'VP',name:'Patrick Hennessey',url:27965},
+          {role:'Regional Director (W)',name:'Marc Goldstein',url:27521},
+          {role:'Secondary Leader',name:'Chris Destefano',url:26158},
+          {role:'IP',name:'Kent Simpson',url:27237}
+        ],
+        glossaryId:'screening'
+      },
+      {
+        situation:'ResidentShield — Renter\'s insurance requirements or compliance tracking',
+        desc:'Client asking about requiring renters insurance, tracking compliance, or protecting owner assets.',
+        products:['ResidentShield Insurance'],
+        contacts:[
+          {role:'VP',name:'Patrick Hennessey',url:27965},
+          {role:'Regional Director (W)',name:'Cheri Quattlebaum',url:26104},
+          {role:'Secondary Leader',name:'Mike McGrath',url:44432},
+          {role:'IP',name:'Kent Simpson',url:27237}
+        ],
+        glossaryId:'insurance'
+      },
+      {
+        situation:'RentCafé Rewards — Resident loyalty, retention programs, or value-add services',
+        desc:'Client asking about reducing turnover, rewarding residents, or adding services to improve satisfaction.',
+        products:['RentCafé Rewards & Renter Essentials'],
+        contacts:[
+          {role:'VP',name:'Patrick Hennessey',url:27965},
+          {role:'Regional Director (W)',name:'Madeleine Zapreyev',url:27476},
+          {role:'Secondary Leader',name:'Katy Coleman',url:51150},
+          {role:'IP',name:'Robin Ruttle',url:60419}
+        ],
+        glossaryId:'rewards'
+      },
+      {
+        situation:'Utility billing, submetering, or energy/sustainability reporting',
+        desc:'Client asking about billing residents for utilities, submetering, or ESG reporting requirements.',
+        products:['YES Energy'],
+        contacts:[{role:'VP',name:'James Armour',url:26822},{role:'Regional Director (W/C)',name:'Ashley Davis',url:25825},{role:'Regional Director (NE/SE)',name:'Dan Rice',url:41922}],
+        glossaryId:'yesEnergy'
+      },
+      {
+        situation:'Maintenance IQ — Work orders, inspections, or unit turn management',
+        desc:'Client asking about maintenance operations, work order tracking, inspection management, or reducing vacancy days through faster unit turns.',
+        products:['Maintenance IQ'],
+        contacts:[
+          {role:'SVP',name:'Arjun Rao',url:43446},
+          {role:'Regional Director',name:'Reece McPherson',url:28209},
+          {role:'Secondary Leader, Impl.',name:'David Rose',url:42895},
+          {role:'Secondary Leader, CS',name:'Brandon Ratliff',url:43552},
+          {role:'Product Owner',name:'Sam Chatterton',url:42251}
+        ],
+        glossaryId:'maintenanceiq'
+      },
+      {
+        situation:'Procurement, vendor management, or AP automation',
+        desc:'Client asking about automating accounts payable, vendor invoicing, or procurement workflows.',
+        products:['Procure to Pay (P2P)'],
+        contacts:[{role:'President',name:'Akshai Rao',url:25513},{role:'Regional Director (W/C)',name:'Chris Gruninger',url:26126},{role:'Regional Director (NE/SE)',name:'Ross Conner',url:28321}],
+        glossaryId:'p2p'
+      },
+    ]
+  },
+  {
+    category:'Affordable, Specialty & Public Housing',
+    routes:[
+      {
+        situation:'Affordable housing compliance (HUD, LIHTC, HOME)',
+        desc:'Client with regulated affordable housing units asking about compliance, reporting, or HUD programs.',
+        products:['Affordable'],
+        contacts:[{role:'VP',name:'Chuck Manly',url:26172},{role:'Regional Director (W/C)',name:'Jonathan Powell',url:27063},{role:'Regional Director (NE/SE)',name:'Jessica Krisher',url:26973},{role:'IP',name:'Mark Livanec',url:53392}],
+        glossaryId:'affordable'
+      },
+      {
+        situation:'Public Housing Authority or Section 8 voucher administration',
+        desc:'Client is a PHA or administers Housing Choice Voucher programs.',
+        products:['PHA'],
+        contacts:[{role:'VP',name:'Chuck Manly',url:26172},{role:'Regional Director',name:'Gabrielle Van Horn',url:26618},{role:'IP',name:'Jeff Bischoff',url:26914}],
+        glossaryId:'pha'
+      },
+      {
+        situation:'Military housing or defense contractor communities',
+        desc:'Client operates military family housing or partners with a defense housing contractor.',
+        products:['Military'],
+        contacts:[{role:'President',name:'Akshai Rao',url:25513},{role:'Regional Director + IP',name:'Anja Jacobs',url:25760}],
+        glossaryId:'military'
+      },
+      {
+        situation:'Purpose-built student housing',
+        desc:'Client operates student housing with by-the-bed leasing, academic-year terms, or guarantor requirements.',
+        products:['Student'],
+        contacts:[{role:'VP',name:'Brian Draper',url:25987},{role:'Regional Director',name:'Wes Baka',url:29022}],
+        glossaryId:'student'
+      },
+    ]
+  },
+];
+
+// ── State ──────────────────────────────────────────────────────
+let activeFilter = 'all';
+
+// ── View switching ─────────────────────────────────────────────
+function switchView(v, el) {
+  document.querySelectorAll('.vtab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + v).classList.add('active');
+  document.getElementById('search-bar').style.display = v === 'glossary' ? '' : 'none';
+}
+
+// ── Glossary filter ────────────────────────────────────────────
+function setFilter(cat, el) {
+  activeFilter = cat;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  filterProducts();
+}
+
+function filterProducts() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  let visible = 0;
+  document.querySelectorAll('.product-card').forEach(card => {
+    const id = card.dataset.id;
+    const p = products.find(x => x.id === id);
+    const matchCat = activeFilter === 'all' || p.category === activeFilter;
+    const matchQ = !q || p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q) || p.type.toLowerCase().includes(q);
+    const show = matchCat && matchQ;
+    card.classList.toggle('hidden', !show);
+    if (show) visible++;
+  });
+  document.querySelectorAll('.product-section').forEach(sec => {
+    const any = [...sec.querySelectorAll('.product-card')].some(c => !c.classList.contains('hidden'));
+    sec.style.display = any ? '' : 'none';
+  });
+  document.getElementById('empty').style.display = visible === 0 ? 'block' : 'none';
+}
+
+function toggleExpand(id) {
+  const exp = document.getElementById('exp-' + id);
+  const btn = document.getElementById('ebtn-' + id);
+  const open = exp.classList.toggle('open');
+  btn.innerHTML = open
+    ? '<i class="fa-solid fa-chevron-up" style="font-size:10px"></i> Less'
+    : '<i class="fa-solid fa-chevron-down" style="font-size:10px"></i> More details';
+}
+
+function jumpTo(name) {
+  const q = document.getElementById('search');
+  q.value = name;
+  activeFilter = 'all';
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  document.querySelector('.chip').classList.add('active');
+  filterProducts();
+  const cards = [...document.querySelectorAll('.product-card')].filter(c => !c.classList.contains('hidden'));
+  if (cards.length) cards[0].scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+// ── Build glossary cards ───────────────────────────────────────
+function buildCard(p) {
+  const badgesHtml = p.badges.map(b => `<span class="badge ${b.cls}">${b.label}</span>`).join('');
+  const relatedHtml = p.relatesTo.map(r =>
+    `<a class="related-pill" href="${r.url}" target="_blank" rel="noopener">${r.name} ↗</a>`
+  ).join('');
+  const dirLink = p.dirUrl
+    ? `<a class="meta-tag meta-dir" href="${p.dirUrl}" target="_blank"><i class="fa-solid fa-address-book" style="font-size:9px"></i> View contacts</a>`
+    : `<a class="meta-tag meta-dir" href="https://yardi.atlassian.net/wiki/spaces/~ShanaW/pages/1846837284/Res+Leadership+Directory" onclick="sessionStorage.setItem('glossarySearch','${p.name}');return true;"><i class="fa-solid fa-address-book" style="font-size:9px"></i> View in directory</a>`;
+
+  return `<div class="product-card${p.cardClass?' '+p.cardClass:''}" data-id="${p.id}" data-cat="${p.category}">
+    <div class="product-header">
+      <div class="product-icon ${p.iconClass}"><i class="${p.icon}"></i></div>
+      <div style="flex:1;min-width:0">
+        <div class="product-name">${p.name}${badgesHtml}</div>
+        <div class="product-suite">${p.suite} &middot; ${p.type}</div>
+        <div class="product-desc">${p.desc}</div>
+        <div class="product-meta">
+          <a class="meta-tag meta-owner" href="${EC}${p.ownerUrl}" target="_blank" rel="noopener"><i class="fa-solid fa-user" style="font-size:9px"></i>${p.ownerName}</a>
+          <a class="meta-tag meta-link" href="${p.url}" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:9px"></i> ${p.pill}</a>
+          ${dirLink}
+        </div>
+        <button class="expand-toggle" id="ebtn-${p.id}" onclick="toggleExpand('${p.id}')">
+          <i class="fa-solid fa-chevron-down" style="font-size:10px"></i> More details
+        </button>
+      </div>
+    </div>
+    <div class="product-expand" id="exp-${p.id}">
+      <div class="expand-grid">
+        <div class="expand-item">
+          <label>When to engage</label>
+          <p>${p.whenToEngage}</p>
+        </div>
+        <div class="expand-item">
+          <label>How it differs</label>
+          <p>${p.distinguishFrom}</p>
+        </div>
+        <div class="expand-item">
+          <label>Key fact</label>
+          <p>${p.keyFact}</p>
+        </div>
+        <div class="expand-item">
+          <label>Related products</label>
+          <div class="related">${relatedHtml}</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildGlossary() {
+  const sections = [
+    {key:'platform',label:'Platform & AI',icon:'fa-solid fa-database',cls:'icon-core'},
+    {key:'marketing',label:'Marketing',icon:'fa-solid fa-globe',cls:'icon-marketing'},
+    {key:'crm',label:'CRM & Leasing',icon:'fa-solid fa-users',cls:'icon-crm'},
+    {key:'asset',label:'Asset Management',icon:'fa-solid fa-chart-line',cls:'icon-asset'},
+    {key:'resident',label:'Resident Services',icon:'fa-solid fa-house-user',cls:'icon-resident'},
+    {key:'affordable',label:'Affordable & Specialty',icon:'fa-solid fa-house-chimney',cls:'icon-affordable'},
+    {key:'ancillary',label:'Ancillary & Operations',icon:'fa-solid fa-bolt',cls:'icon-ancillary'},
+  ];
+  const container = document.getElementById('products-container');
+  sections.forEach(sec => {
+    const div = document.createElement('div');
+    div.className = 'product-section';
+    div.dataset.cat = sec.key;
+    div.innerHTML = `<div class="section-label">
+      <span class="sec-icon ${sec.cls}"><i class="${sec.icon}"></i></span>${sec.label}
+    </div>` + products.filter(p => p.category === sec.key).map(buildCard).join('');
+    container.appendChild(div);
+  });
+}
+
+// ── Build routing guide ────────────────────────────────────────
+function buildRouting() {
+  const container = document.getElementById('routing-content');
+  routing.forEach(cat => {
+    const div = document.createElement('div');
+    div.className = 'route-category';
+    div.innerHTML = `<div class="route-cat-label">${cat.category}</div>` +
+      cat.routes.map(r => {
+        const prodPills = r.products.map(pr => {
+          const p = products.find(x => x.name === pr || x.name.includes(pr.split(' ')[0]));
+          const glossaryHref = p ? `productglossary#${p.id}` : 'productglossary';
+          return `<a class="route-prod" href="${glossaryHref}">
+            <i class="fa-solid fa-book-open" style="font-size:9px"></i> ${pr}
+          </a>`;
+        }).join('');
+        const contactsHtml = r.contacts.map(c =>
+          `<div class="route-contact">
+            <span class="route-role">${c.role}</span>
+            <a class="route-name" href="${EC}${c.url}" target="_blank" rel="noopener">${c.name} ↗</a>
+          </div>`
+        ).join('');
+        return `<div class="route-card">
+          <div>
+            <div class="route-situation">${r.situation}</div>
+            <div class="route-desc">${r.desc}</div>
+            <div class="route-product-pills">${prodPills}</div>
+          </div>
+          <div class="route-contacts">${contactsHtml}</div>
+        </div>`;
+      }).join('');
+    container.appendChild(div);
+  });
+}
+
+buildGlossary();
+buildRouting();
+</script>
+</body>
+</html>
