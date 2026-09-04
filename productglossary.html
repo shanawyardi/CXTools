@@ -1296,8 +1296,23 @@ function buildRouting() {
   });
 }
 
-buildGlossary();
-buildRouting();
+function initAll() {
+  const container = document.getElementById('products-container');
+  const routing = document.getElementById('routing-content');
+  if (!container || !routing) return;
+  if (container.children.length === 0) buildGlossary();
+  if (routing.children.length === 0) buildRouting();
+}
+
+// Multiple triggers for Confluence iframe compatibility
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAll);
+} else {
+  initAll();
+}
+window.addEventListener('load', initAll);
+setTimeout(initAll, 300);
+setTimeout(initAll, 1000);
 </script>
 </body>
 </html>
