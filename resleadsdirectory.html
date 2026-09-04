@@ -227,6 +227,17 @@ body { font-family: var(--ys-font-ui); font-size: var(--ys-text-base); color: va
 .view-panel { display: none; }
 .view-panel.active { display: block; }
 
+.card-expand-btn { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--ys-fg-tertiary); background:none; border:none; cursor:pointer; padding:6px 0 0; font-family:var(--ys-font-ui); font-weight:600; transition:color 0.12s; }
+.card-expand-btn:hover { color:var(--ys-primary-500); }
+.card-expand-btn i { font-size:10px; transition:transform 0.2s; }
+.card-expand-btn.open i { transform:rotate(180deg); }
+.card-expand-body { display:none; margin-top:10px; padding-top:10px; border-top:1px solid var(--ys-border-subtle); }
+.card-expand-body.open { display:block; }
+.expand-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.expand-item label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--ys-fg-tertiary); display:block; margin-bottom:3px; }
+.expand-item p { font-size:12px; color:var(--ys-fg-secondary); line-height:1.5; }
+.expand-escalate { grid-column:1 / -1; background:var(--ys-bg-sunken); border-radius:var(--ys-radius-sm); padding:8px 10px; border:1px solid var(--ys-border-subtle); }
+
 /* ── Multi-select ── */
 .dir-card.selected {
   border-color: var(--ys-border-primary);
@@ -293,9 +304,14 @@ body { font-family: var(--ys-font-ui); font-size: var(--ys-text-base); color: va
 <nav class="ys-topbar">
   <div>
     <div class="ys-topbar-product">Res Leadership Directory</div>
-    <div class="ys-topbar-sub">CX Partners in Sales and Services</div>
+    <div class="ys-topbar-sub">CX Partners in Sales and Services &nbsp;·&nbsp; <a href="productglossary" style="color:rgba(255,255,255,0.70);text-decoration:none;font-size:13px;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.70)'">Product Glossary ↗</a></div>
   </div>
   <div class="ys-topbar-spacer"></div>
+  <div style="display:flex;align-items:center;gap:4px;margin-left:auto">
+    <a href="." style="display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 12px;border-radius:6px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);font-family:var(--ys-font-ui);font-size:12px;font-weight:600;color:rgba(255,255,255,0.75);text-decoration:none;transition:all 0.12s" onmouseover="this.style.color='#fff';this.style.background='rgba(255,255,255,0.18)'" onmouseout="this.style.color='rgba(255,255,255,0.75)';this.style.background='rgba(255,255,255,0.10)'"><i class="fa-solid fa-house" style="font-size:10px"></i> Home</a>
+    <a href="resleadsdirectory" style="display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 12px;border-radius:6px;background:#fff;border:1px solid rgba(255,255,255,0.30);font-family:var(--ys-font-ui);font-size:12px;font-weight:600;color:rgb(0,46,82);text-decoration:none">Directory</a>
+    <a href="productglossary" style="display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 12px;border-radius:6px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.18);font-family:var(--ys-font-ui);font-size:12px;font-weight:600;color:rgba(255,255,255,0.75);text-decoration:none;transition:all 0.12s" onmouseover="this.style.color='#fff';this.style.background='rgba(255,255,255,0.18)'" onmouseout="this.style.color='rgba(255,255,255,0.75)';this.style.background='rgba(255,255,255,0.10)'">Glossary</a>
+  </div>
   <div class="ys-tabs-pill">
     <button class="ys-tab ys-tab-active" onclick="setView('cards',this)">Directory</button>
     <button class="ys-tab" onclick="setView('org',this)">Org chart</button>
@@ -360,7 +376,7 @@ const people = [
   {name:'Eric Zellhart', email:'eric.zellhart', url:59048, section:'Services', role:'Product Owner', tier:'Lead', products:['RentCafé (Applicant/Resident Portals)'], regions:['Other'], vp:'Arjun Rao'},
   {name:'Jacqueline Spiller', email:'jacqueline.spiller', url:49094, section:'Services', role:'Secondary Leader', tier:'S', products:['Chat IQ'], regions:['Other'], vp:'Arjun Rao'},
   {name:'Jim Hill', email:'jim.hill', url:26993, section:'Services', role:'Regional Lead', tier:'Lead', products:['YLD/Blue Moon'], regions:['West'], vp:'Arjun Rao'},
-  {name:'Guy Weiss', email:'guy.weiss', url:47560, section:'Services', role:'Secondary Leader', tier:'S', products:['YLD/Blue Moon'], regions:['Other'], vp:'Arjun Rao'},
+  {name:'Guy Weiss', email:'guy.weiss', url:47560, section:'Services', role:'Product Owner', tier:'Lead', products:['YLD/Blue Moon'], regions:['Other'], vp:'Arjun Rao'},
   {name:'Dustin Bradford', email:'dustin.bradford', url:26483, section:'Services', role:'Regional Lead', tier:'Lead', products:['Revenue IQ'], regions:['West'], vp:'Arjun Rao'},
   {name:'Monica Bosch', email:'monica.bosch', url:27773, section:'Services', role:'Secondary Leader', tier:'S', products:['Revenue IQ'], regions:['Other'], vp:'Arjun Rao'},
   {name:'Tom Dragmen', email:'tom.dragmen', url:28845, section:'Services', role:'Regional Lead', tier:'Lead', products:['Forecast IQ','Data Connect','Asset IQ'], regions:['West'], vp:'Arjun Rao'},
@@ -398,14 +414,22 @@ const people = [
   {name:'Chris Gruninger', email:'chris.gruninger', url:26126, section:'Services', role:'Regional Lead', tier:'Lead', products:['Procure to Pay'], regions:['West','Central'], vp:'Akshai Rao'},
   {name:'Ross Conner', email:'ross.conner', url:28321, section:'Services', role:'Regional Lead', tier:'Lead', products:['Procure to Pay'], regions:['Northeast','Southeast'], vp:'Akshai Rao'},
   {name:'Jennifer Jones', email:'jennifer.jones', url:42531, section:'Services', role:'Secondary Leader', tier:'S', products:['Procure to Pay (VendorCafe)'], regions:['Other'], vp:'Akshai Rao'},
-  {name:'Shivani Kumar', email:'shivani.kumar', url:60287, section:'Services', role:'Regional Lead', tier:'Lead', products:['Virtuoso'], regions:['West','Central','Northeast','Southeast'], vp:'Akshai Rao'},
-  {name:'Joe Consolo', email:'joe.consolo', url:42947, section:'Services', role:'Industry Principal', tier:'IP', products:['Virtuoso'], regions:['Other'], vp:'Akshai Rao'},
+  {name:'Shivani Kumar', email:'shivani.kumar', url:60287, section:'Services', role:'Industry Principal', tier:'IP', products:['Virtuoso'], regions:['West','Central','Northeast','Southeast'], vp:'Akshai Rao'},
+  {name:'Joe Consolo', email:'joe.consolo', url:42947, section:'Services', role:'Regional Lead', tier:'Lead', products:['Virtuoso'], regions:['Other'], vp:'Akshai Rao'},
   {name:'Wes Baka', email:'wes.baka', url:29022, section:'Services', role:'Regional Lead', tier:'Lead', products:['Student'], regions:['West'], vp:'Brian Draper'},
   {name:'Elliott Arnold', email:'elliott.arnold', url:47359, section:'Services', role:'Secondary Leader', tier:'S', products:['Student'], regions:['Other'], vp:'Brian Draper'},
   {name:'Ashley Davis', email:'ashley.davis', url:25825, section:'Services', role:'Regional Lead', tier:'Lead', products:['YES Energy'], regions:['West','Central'], vp:'James Armour'},
   {name:'Dan Rice', email:'dan.rice', url:41922, section:'Services', role:'Regional Lead', tier:'Lead', products:['YES Energy'], regions:['Northeast','Southeast'], vp:'James Armour'},
   {name:'Nick Pulver', email:'nick.pulver', url:41950, section:'Services', role:'Secondary Leader', tier:'S', products:['YES Energy'], regions:['Other'], vp:'James Armour'},
   {name:'Sanket Kapadia', email:'sanket.kapadia', url:59384, section:'Services', role:'Industry Principal', tier:'IP', products:['YES Energy'], regions:['Other'], vp:'James Armour'},
+  // MAINTENANCE IQ
+  {name:'Reece McPherson', email:'reece.mcpherson', url:28209, section:'Services', role:'Senior Director, Maintenance Implementation', tier:'Lead', products:['Maintenance IQ — Implementation (West)'], regions:['West'], vp:'Arjun Rao'},
+  {name:'David Rose', email:'david.rose', url:42895, section:'Services', role:'Senior Manager, Maintenance Implementation', tier:'Lead', products:['Maintenance IQ — Implementation (Northeast/Southeast)'], regions:['Northeast','Southeast'], vp:'Arjun Rao'},
+  {name:'Brandon Ratliff', email:'brandon.ratliff', url:43552, section:'Services', role:'Manager, Maintenance IQ Client Success', tier:'S', products:['Maintenance IQ — Client Success'], regions:['West','Central','Northeast','Southeast'], vp:'Arjun Rao'},
+  {name:'Sam Chatterton', email:'sam.chatterton', url:42251, section:'Services', role:'Product Owner, Maintenance IQ', tier:'Lead', products:['Maintenance IQ — Product'], regions:['Other'], vp:'Arjun Rao'},
+  {name:'Ted Collins', email:'ted.collins', url:41625, section:'Services', role:'Senior Team Leader, Maintenance Implementation', tier:'S', products:['Maintenance IQ — Implementation (West)'], regions:['West'], vp:'Arjun Rao'},
+  {name:'James Butler', email:'james.butler', url:43944, section:'Services', role:'Team Leader, Maintenance Implementation', tier:'S', products:['Maintenance IQ — Implementation (Northeast/Southeast)'], regions:['Northeast','Southeast'], vp:'Arjun Rao'},
+  {name:'Ashley Sharifian', email:'ashley.sharifian', url:45472, section:'Services', role:'Manager, Maintenance Client Success', tier:'S', products:['Maintenance IQ — Client Success (Northeast/Southeast)'], regions:['Northeast','Southeast'], vp:'Arjun Rao'},
   {name:'Paul Yount', email:'paul.yount', url:27999, section:'Services', role:'Industry Principal', tier:'IP', products:['RentCafé','CRM Flex/IQ','Chat IQ','YLD/Blue Moon','Yardi Call Center'], regions:['Other']},
   {name:'Amy Walston', email:'amy.walston', url:25655, section:'Services', role:'Industry Principal', tier:'IP', products:['Revenue IQ','Forecast IQ','Data Connect','Asset IQ'], regions:['Other']},
   {name:'Kent Simpson', email:'kent.simpson', url:27237, section:'Services', role:'Industry Principal', tier:'IP', products:['Screening','Insurance'], regions:['Other']},
@@ -434,7 +458,7 @@ const people = [
 ];
 
 const matrixProducts = [
-  'CORE/Voyager','RentCafé','CRM Flex/IQ','Chat IQ','YLD/Blue Moon',
+  'CORE/Voyager','RentCafé','CRM Flex/IQ','Chat IQ','YLD/Blue Moon','Maintenance IQ',
   'Revenue IQ','Forecast IQ','Data Connect','Asset IQ','Screening',
   'Insurance','Yardi Call Center','RentCafé Rewards & Renter Essentials',
   'RentCafé Marketing/Websites','RentCafé REACH','Affordable','PHA',
@@ -508,6 +532,17 @@ function regionTagClass(r) {
   return {West:'tag-west',Central:'tag-central',Northeast:'tag-northeast',Southeast:'tag-southeast'}[r]||'tag-more';
 }
 
+function toggleCardExpand(bodyId, btnId) {
+  const body = document.getElementById(bodyId);
+  const btn = document.getElementById(btnId);
+  if (!body || !btn) return;
+  const open = body.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  btn.innerHTML = open
+    ? '<i class="fa-solid fa-chevron-up"></i> Hide details'
+    : '<i class="fa-solid fa-chevron-down"></i> Show details';
+}
+
 function setFilter(f, el) {
   activeFilter = f;
   document.querySelectorAll('.ys-chip-select').forEach(c => c.classList.remove('ys-chip-select-active'));
@@ -548,6 +583,49 @@ function render() {
   document.getElementById('cards-content').innerHTML = html;
 }
 
+// Escalation guidance per tier
+function escalationText(p) {
+  if (p.tier === 'President' || p.tier === 'SVP' || p.tier === 'EVP') {
+    return 'This is a senior leader. For contract, pricing, or executive decisions loop in Michael Mankoff. If business is at risk, loop in Arjun Rao and Michael Mankoff immediately.';
+  }
+  if (p.tier === 'VP') {
+    return 'For unresolved escalations, contract decisions, or exec-level client requests loop in Arjun Rao and Michael Mankoff. If business is at risk, escalate immediately.';
+  }
+  if (p.tier === 'IP') {
+    return 'Industry Principals advise across all regions. For escalations loop in the relevant VP. If business is at risk, loop in Arjun Rao and Michael Mankoff.';
+  }
+  if (p.tier === 'Lead') {
+    const vp = p.vp ? p.vp : 'the relevant VP';
+    return `Escalate unresolved issues to ${vp}. For contract, pricing, or business-at-risk situations loop in Arjun Rao and Michael Mankoff.`;
+  }
+  return `Escalate to ${p.vp || 'the relevant VP'} for unresolved issues. If business is at risk, loop in Arjun Rao and Michael Mankoff.`;
+}
+
+function bestForText(p) {
+  if (p.tier === 'President') return 'Strategic direction, executive relationships, and AI/Virtuoso product vision. Engage for board-level client conversations.';
+  if (p.tier === 'SVP') return 'Product portfolio decisions, implementation strategy, and senior client escalations across the full product suite.';
+  if (p.tier === 'EVP') return 'Sales strategy, enterprise deal structure, and executive-level client relationships across the full residential portfolio.';
+  if (p.tier === 'VP') {
+    const prods = p.products.slice(0,2).join(', ');
+    return `${prods} strategy, client escalations, and product direction. First point of escalation for their team.`;
+  }
+  if (p.tier === 'IP') {
+    return `Deep ${p.products.slice(0,2).join('/')} expertise. Engage for complex product questions, client advisory, and pre-sales support.`;
+  }
+  if (p.tier === 'Lead') {
+    const regions = p.regions.filter(r => !['Other','Senior'].includes(r)).join(', ') || 'assigned region';
+    return `${p.products.slice(0,2).join('/')} implementations and support for ${regions} clients. First contact for day-to-day client needs.`;
+  }
+  return `${p.products.slice(0,2).join('/')} support and implementation. Engage for product-specific client questions.`;
+}
+
+function scopeText(p) {
+  const prods = p.products.join(', ');
+  const regions = p.regions.filter(r => !['Other','Senior'].includes(r));
+  const regionStr = regions.length ? regions.join(', ') : 'all regions';
+  return `${prods} — ${regionStr}.`;
+}
+
 function card(p) {
   const rTags = p.regions.filter(r => !['Other','Senior'].includes(r)).slice(0,3).map(r => `<span class="tag ${regionTagClass(r)}">${r}</span>`).join('');
   const pTags = p.products.slice(0,2).map(pr => `<span class="tag tag-product">${pr}</span>`).join('');
@@ -571,6 +649,25 @@ function card(p) {
       </div>
     </div>
     <div class="card-tags">${rTags}${pTags}${more}</div>
+    <button class="card-expand-btn" id="cebtn-${p.url}" onclick="event.stopPropagation();toggleCardExpand('cebd-${p.url}','cebtn-${p.url}')">
+      <i class="fa-solid fa-chevron-down"></i> Show details
+    </button>
+    <div class="card-expand-body" id="cebd-${p.url}">
+      <div class="expand-grid">
+        <div class="expand-item">
+          <label>Scope</label>
+          <p>${scopeText(p)}</p>
+        </div>
+        <div class="expand-item">
+          <label>Best for</label>
+          <p>${bestForText(p)}</p>
+        </div>
+        <div class="expand-item expand-escalate">
+          <label>When to escalate</label>
+          <p>${escalationText(p)}</p>
+        </div>
+      </div>
+    </div>
   </div>`;
 }
 
